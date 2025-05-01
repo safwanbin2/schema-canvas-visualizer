@@ -12,6 +12,7 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import DashboardPage from "./pages/dashboard";
 import EditorPage from "./pages/editor";
+import ProfilePage from "./pages/profile";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 
@@ -39,6 +40,7 @@ const App = () => (
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/editor/:id" element={<EditorPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

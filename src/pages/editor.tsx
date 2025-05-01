@@ -109,7 +109,7 @@ const EditorPage = () => {
   }
 
   return (
-    <div className="flex h-full editor-container">
+    <div className="flex h-full w-full">
       {/* Schema editor sidebar */}
       <SchemaSidebar 
         schema={schema} 
@@ -119,7 +119,7 @@ const EditorPage = () => {
       />
       
       {/* Main editor area */}
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 h-full">
         {/* Editor toolbar */}
         <div className="p-4 border-b flex justify-between items-center bg-background">
           <div className="flex items-center gap-2">
@@ -142,13 +142,15 @@ const EditorPage = () => {
           </Button>
         </div>
         
-        {/* Canvas area */}
-        <ERDCanvas 
-          schema={schema} 
-          selectedEntityId={selectedEntityId}
-          setSelectedEntityId={setSelectedEntityId}
-          onSchemaChange={setSchema}
-        />
+        {/* Canvas area - full width and height */}
+        <div className="flex-1 h-full w-full overflow-hidden">
+          <ERDCanvas 
+            schema={schema} 
+            selectedEntityId={selectedEntityId}
+            setSelectedEntityId={setSelectedEntityId}
+            onSchemaChange={setSchema}
+          />
+        </div>
       </div>
     </div>
   );

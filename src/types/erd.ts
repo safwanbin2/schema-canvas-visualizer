@@ -60,3 +60,12 @@ export interface CanvasState {
   };
   selectedEntityId?: string;
 }
+
+// User type
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+

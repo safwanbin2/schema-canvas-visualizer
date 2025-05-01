@@ -114,6 +114,26 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
     setDragMode(!dragMode);
   };
 
+  // Handle mouse wheel for zooming with Ctrl key
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.05 : 0.05;
+      setZoom((prev) => Math.min(Math.max(prev + delta, 0.5), 2));
+    }
+  };
+
+  // Add wheel event listener
+  useEffect(() => {
+    const canvasElement = canvasRef.current;
+    if (canvasElement) {
+      canvasElement.addEventListener('wheel', handleWheel as unknown as EventListener, { passive: false });
+      return () => {
+        canvasElement.removeEventListener('wheel', handleWheel as unknown as EventListener);
+      };
+    }
+  }, []);
+
   return (
     <div className="relative flex-1 overflow-hidden">
       {/* Canvas controls */}

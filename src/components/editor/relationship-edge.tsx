@@ -184,7 +184,6 @@ const RelationshipEdge: React.FC<RelationshipEdgeProps> = ({
         className="pointer-events-none"
       >
         <div 
-          xmlns="http://www.w3.org/1999/xhtml"
           className={cn(
             "text-xs px-2 py-1 rounded-md text-center bg-background/80 backdrop-blur-sm",
             highlighted ? "text-primary font-medium" : "text-muted-foreground"
