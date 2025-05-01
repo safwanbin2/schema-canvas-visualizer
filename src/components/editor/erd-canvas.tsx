@@ -134,6 +134,12 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
     }
   }, []);
 
+  // Log render for debugging
+  useEffect(() => {
+    console.log("ERDCanvas rendered with schema:", schema);
+    console.log("Entities count:", schema.entities.length);
+  }, [schema]);
+
   return (
     <div className="relative h-full w-full overflow-hidden">
       {/* Canvas controls */}
@@ -172,7 +178,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
       {/* Canvas area */}
       <div
         ref={canvasRef}
-        className="w-full h-full canvas-grid overflow-hidden cursor-default"
+        className="w-full h-full overflow-hidden cursor-default bg-background/20"
         style={{ 
           cursor: dragMode ? (dragging ? "grabbing" : "grab") : "default"
         }}

@@ -24,6 +24,7 @@ const EditorPage = () => {
   useEffect(() => {
     if (!id || !user?.id) return;
 
+    console.log("Loading project with ID:", id);
     setLoading(true);
     
     // Simulate loading delay for better UX
@@ -32,17 +33,25 @@ const EditorPage = () => {
       if (storedProjects) {
         try {
           const projects: ERDProject[] = JSON.parse(storedProjects);
+          console.log("All projects:", projects);
+          
           const currentProject = projects.find(p => p.id === id);
+          console.log("Current project:", currentProject);
           
           if (currentProject) {
             setProject(currentProject);
             // If the project has an existing schema, use that, otherwise create a default
             if (currentProject.schema && 
                 currentProject.schema.entities && 
+                Array.isArray(currentProject.schema.entities) &&
                 currentProject.schema.entities.length > 0) {
+              console.log("Using existing schema:", currentProject.schema);
               setSchema(currentProject.schema);
             } else {
-              setSchema(createDefaultSchema());
+              console.log("Creating default schema");
+              const defaultSchema = createDefaultSchema();
+              console.log("Default schema created:", defaultSchema);
+              setSchema(defaultSchema);
             }
           } else {
             toast.error("Project not found");
@@ -88,6 +97,11 @@ const EditorPage = () => {
       }
     }
   };
+
+  // Debug schema
+  useEffect(() => {
+    console.log("Schema updated:", schema);
+  }, [schema]);
 
   if (loading) {
     return (

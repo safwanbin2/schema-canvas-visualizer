@@ -1,221 +1,172 @@
 
-import { Attribute, Entity, Relationship, ERDSchema } from "@/types/erd";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
+import { ERDSchema, Entity, Attribute, Relationship } from '@/types/erd';
 
-// Create new entities, attributes and relationships
-export const createEntity = (name: string, x: number = 100, y: number = 100): Entity => {
-  return {
+// Create a default schema with sample tables
+export const createDefaultSchema = (): ERDSchema => {
+  // Create sample users entity
+  const usersEntity: Entity = {
     id: uuidv4(),
-    name,
-    attributes: [],
-    position: { x, y },
+    name: 'users',
+    attributes: [
+      {
+        id: uuidv4(),
+        name: 'id',
+        dataType: 'uuid',
+        isPrimaryKey: true,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'username',
+        dataType: 'varchar',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'email',
+        dataType: 'varchar',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'created_at',
+        dataType: 'timestamp',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      }
+    ],
+    position: {
+      x: 200,
+      y: 150
+    }
+  };
+
+  // Create sample posts entity
+  const postsEntity: Entity = {
+    id: uuidv4(),
+    name: 'posts',
+    attributes: [
+      {
+        id: uuidv4(),
+        name: 'id',
+        dataType: 'uuid',
+        isPrimaryKey: true,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'title',
+        dataType: 'varchar',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'content',
+        dataType: 'text',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      },
+      {
+        id: uuidv4(),
+        name: 'user_id',
+        dataType: 'uuid',
+        isPrimaryKey: false,
+        isForeignKey: true,
+        isRequired: true,
+        foreignKeyReference: {
+          entityId: usersEntity.id,
+          attributeId: usersEntity.attributes[0].id
+        }
+      },
+      {
+        id: uuidv4(),
+        name: 'created_at',
+        dataType: 'timestamp',
+        isPrimaryKey: false,
+        isForeignKey: false,
+        isRequired: true
+      }
+    ],
+    position: {
+      x: 500,
+      y: 150
+    }
+  };
+
+  // Create relationship between users and posts
+  const relationship: Relationship = {
+    id: uuidv4(),
+    name: 'user_posts',
+    sourceEntityId: usersEntity.id,
+    targetEntityId: postsEntity.id,
+    sourceAttribute: usersEntity.attributes[0].id,
+    targetAttribute: postsEntity.attributes[3].id,
+    type: 'one-to-many'
+  };
+
+  return {
+    entities: [usersEntity, postsEntity],
+    relationships: [relationship]
   };
 };
 
-export const createAttribute = (name: string, dataType: string = "VARCHAR", options: Partial<Attribute> = {}): Attribute => {
+// Helper to create a new entity
+export const createNewEntity = (name: string, x: number = 300, y: number = 200): Entity => {
   return {
     id: uuidv4(),
     name,
-    dataType,
-    isPrimaryKey: options.isPrimaryKey || false,
-    isForeignKey: options.isForeignKey || false,
-    isRequired: options.isRequired || false,
-    foreignKeyReference: options.foreignKeyReference,
+    attributes: [
+      {
+        id: uuidv4(),
+        name: 'id',
+        dataType: 'uuid',
+        isPrimaryKey: true,
+        isForeignKey: false,
+        isRequired: true
+      }
+    ],
+    position: { x, y }
   };
 };
 
-export const createRelationship = (
-  name: string,
+// Helper to create a new attribute
+export const createNewAttribute = (name: string): Attribute => {
+  return {
+    id: uuidv4(),
+    name,
+    dataType: 'varchar',
+    isPrimaryKey: false,
+    isForeignKey: false,
+    isRequired: false
+  };
+};
+
+// Helper to create a new relationship
+export const createNewRelationship = (
   sourceEntityId: string,
   targetEntityId: string,
   sourceAttribute: string,
   targetAttribute: string,
-  type: Relationship["type"] = "one-to-many"
+  type: 'one-to-one' | 'one-to-many' | 'many-to-many' = 'one-to-many'
 ): Relationship => {
   return {
     id: uuidv4(),
-    name,
+    name: `rel_${uuidv4().slice(0, 8)}`,
     sourceEntityId,
     targetEntityId,
     sourceAttribute,
     targetAttribute,
-    type,
-  };
-};
-
-// Helper functions for managing schema
-export const addEntity = (schema: ERDSchema, entity: Entity): ERDSchema => {
-  return {
-    ...schema,
-    entities: [...schema.entities, entity],
-  };
-};
-
-export const updateEntity = (schema: ERDSchema, updatedEntity: Entity): ERDSchema => {
-  return {
-    ...schema,
-    entities: schema.entities.map(entity => 
-      entity.id === updatedEntity.id ? updatedEntity : entity
-    ),
-  };
-};
-
-export const deleteEntity = (schema: ERDSchema, entityId: string): ERDSchema => {
-  // Remove entity
-  const updatedEntities = schema.entities.filter(entity => entity.id !== entityId);
-  
-  // Remove relationships connected to this entity
-  const updatedRelationships = schema.relationships.filter(
-    rel => rel.sourceEntityId !== entityId && rel.targetEntityId !== entityId
-  );
-  
-  return {
-    entities: updatedEntities,
-    relationships: updatedRelationships,
-  };
-};
-
-export const addAttribute = (schema: ERDSchema, entityId: string, attribute: Attribute): ERDSchema => {
-  return {
-    ...schema,
-    entities: schema.entities.map(entity => {
-      if (entity.id === entityId) {
-        return {
-          ...entity,
-          attributes: [...entity.attributes, attribute],
-        };
-      }
-      return entity;
-    }),
-  };
-};
-
-export const updateAttribute = (
-  schema: ERDSchema, 
-  entityId: string, 
-  updatedAttribute: Attribute
-): ERDSchema => {
-  return {
-    ...schema,
-    entities: schema.entities.map(entity => {
-      if (entity.id === entityId) {
-        return {
-          ...entity,
-          attributes: entity.attributes.map(attr => 
-            attr.id === updatedAttribute.id ? updatedAttribute : attr
-          ),
-        };
-      }
-      return entity;
-    }),
-  };
-};
-
-export const deleteAttribute = (schema: ERDSchema, entityId: string, attributeId: string): ERDSchema => {
-  // First update the entity to remove the attribute
-  const updatedEntities = schema.entities.map(entity => {
-    if (entity.id === entityId) {
-      return {
-        ...entity,
-        attributes: entity.attributes.filter(attr => attr.id !== attributeId),
-      };
-    }
-    return entity;
-  });
-  
-  // Also update any foreign key references to this attribute
-  const updatedEntitiesWithFixedReferences = updatedEntities.map(entity => {
-    return {
-      ...entity,
-      attributes: entity.attributes.map(attr => {
-        if (attr.foreignKeyReference?.attributeId === attributeId &&
-            attr.foreignKeyReference?.entityId === entityId) {
-          // Remove the foreign key reference and mark as not a foreign key
-          return {
-            ...attr,
-            isForeignKey: false,
-            foreignKeyReference: undefined,
-          };
-        }
-        return attr;
-      }),
-    };
-  });
-  
-  // Also remove any relationships that reference this attribute
-  const updatedRelationships = schema.relationships.filter(
-    rel => !(
-      (rel.sourceEntityId === entityId && rel.sourceAttribute === attributeId) ||
-      (rel.targetEntityId === entityId && rel.targetAttribute === attributeId)
-    )
-  );
-  
-  return {
-    entities: updatedEntitiesWithFixedReferences,
-    relationships: updatedRelationships,
-  };
-};
-
-export const addRelationship = (schema: ERDSchema, relationship: Relationship): ERDSchema => {
-  return {
-    ...schema,
-    relationships: [...schema.relationships, relationship],
-  };
-};
-
-export const updateRelationship = (schema: ERDSchema, updatedRelationship: Relationship): ERDSchema => {
-  return {
-    ...schema,
-    relationships: schema.relationships.map(rel => 
-      rel.id === updatedRelationship.id ? updatedRelationship : rel
-    ),
-  };
-};
-
-export const deleteRelationship = (schema: ERDSchema, relationshipId: string): ERDSchema => {
-  return {
-    ...schema,
-    relationships: schema.relationships.filter(rel => rel.id !== relationshipId),
-  };
-};
-
-// Helper to create a default schema
-export const createDefaultSchema = (): ERDSchema => {
-  const userEntity = createEntity("User", 100, 100);
-  userEntity.attributes = [
-    createAttribute("id", "INTEGER", { isPrimaryKey: true, isRequired: true }),
-    createAttribute("username", "VARCHAR", { isRequired: true }),
-    createAttribute("email", "VARCHAR", { isRequired: true }),
-    createAttribute("created_at", "TIMESTAMP", { isRequired: true }),
-  ];
-  
-  const postEntity = createEntity("Post", 500, 100);
-  postEntity.attributes = [
-    createAttribute("id", "INTEGER", { isPrimaryKey: true, isRequired: true }),
-    createAttribute("title", "VARCHAR", { isRequired: true }),
-    createAttribute("content", "TEXT", { isRequired: true }),
-    createAttribute("user_id", "INTEGER", { 
-      isRequired: true, 
-      isForeignKey: true,
-      foreignKeyReference: {
-        entityId: userEntity.id,
-        attributeId: userEntity.attributes[0].id
-      }
-    }),
-    createAttribute("created_at", "TIMESTAMP", { isRequired: true }),
-  ];
-  
-  const userPostRelationship = createRelationship(
-    "UserPosts",
-    userEntity.id,
-    postEntity.id,
-    userEntity.attributes[0].id,
-    postEntity.attributes[3].id,
-    "one-to-many"
-  );
-  
-  return {
-    entities: [userEntity, postEntity],
-    relationships: [userPostRelationship],
+    type
   };
 };
