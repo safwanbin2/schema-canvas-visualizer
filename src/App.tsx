@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/auth-context";
 import AuthLayout from "./layouts/auth-layout";
 import AppLayout from "./layouts/app-layout";
@@ -13,18 +13,22 @@ import RegisterPage from "./pages/register";
 import DashboardPage from "./pages/dashboard";
 import EditorPage from "./pages/editor";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light" storageKey="erd-theme-preference">
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
             <Routes>
+              {/* Index Route */}
+              <Route path="/" element={<Index />} />
+              
               {/* Auth Routes */}
               <Route element={<AuthLayout />}>
                 <Route path="/login" element={<LoginPage />} />
@@ -37,12 +41,11 @@ const App = () => (
                 <Route path="/editor/:id" element={<EditorPage />} />
               </Route>
 
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   </QueryClientProvider>
 );
