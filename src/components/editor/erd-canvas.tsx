@@ -135,7 +135,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
   }, []);
 
   return (
-    <div className="relative flex-1 overflow-hidden">
+    <div className="relative flex-1 overflow-hidden w-full">
       {/* Canvas controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <Button
@@ -174,8 +174,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
         ref={canvasRef}
         className="w-full h-full canvas-grid bg-canvas overflow-hidden cursor-default"
         style={{ 
-          cursor: dragMode ? "grab" : "default",
-          cursor: dragging ? "grabbing" : (dragMode ? "grab" : "default"),
+          cursor: dragMode ? (dragging ? "grabbing" : "grab") : "default"
         }}
         onMouseDown={handleCanvasMouseDown}
         onMouseMove={handleCanvasMouseMove}

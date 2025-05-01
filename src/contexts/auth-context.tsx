@@ -8,6 +8,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
@@ -15,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -25,7 +27,8 @@ const mockUsers = [
     id: '1',
     email: 'demo@example.com',
     name: 'Demo User',
-    password: 'password123'
+    password: 'password123',
+    avatar: ''
   }
 ];
 
@@ -95,7 +98,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: `${mockUsers.length + 1}`,
         email,
         name,
-        password
+        password,
+        avatar: ''
       };
       
       // Add to mock database (this would be a real API call)
@@ -116,6 +120,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateUser = (userData: Partial<User>) => {
+    if (!user) return;
+    
+    const updatedUser = { ...user, ...userData };
+    setUser(updatedUser);
+    localStorage.setItem('erd-user', JSON.stringify(updatedUser));
+    
+    // Also update in mock database
+    const userIndex = mockUsers.findIndex(u => u.id === user.id);
+    if (userIndex !== -1) {
+      mockUsers[userIndex] = { 
+        ...mockUsers[userIndex], 
+        ...userData 
+      };
+    }
+    
+    toast.success('Profile updated successfully');
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('erd-user');
@@ -128,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     register,
     logout,
+    updateUser,
     isAuthenticated: !!user,
     isLoading
   };

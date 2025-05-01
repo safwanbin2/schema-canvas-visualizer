@@ -8,10 +8,10 @@ import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Entity, Attribute, ERDSchema, Relationship } from "@/types/erd";
+import { Entity, Attribute, ERDSchema, Relationship, RelationshipType } from "@/types/erd";
 import { 
   createEntity, 
   createAttribute, 
@@ -60,13 +60,20 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
 
   // Relationship dialog state
   const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false);
-  const [newRelationship, setNewRelationship] = useState({
+  const [newRelationship, setNewRelationship] = useState<{
+    name: string;
+    sourceEntityId: string;
+    targetEntityId: string;
+    sourceAttribute: string;
+    targetAttribute: string;
+    type: RelationshipType;
+  }>({
     name: "",
     sourceEntityId: "",
     targetEntityId: "",
     sourceAttribute: "",
     targetAttribute: "",
-    type: "one-to-many" as const
+    type: "one-to-many"
   });
 
   // Entity operations
@@ -288,6 +295,7 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add New Entity</DialogTitle>
+                <DialogDescription>Enter a name for your entity</DialogDescription>
               </DialogHeader>
               <div className="py-4">
                 <Label htmlFor="entityName">Entity Name</Label>
@@ -413,6 +421,7 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editingAttributeId ? 'Edit Attribute' : 'Add New Attribute'}</DialogTitle>
+            <DialogDescription>Define the attribute properties</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -515,7 +524,6 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
                           attributeId: value
                         }
                       })}
-                      className="mt-2"
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select attribute" />
@@ -548,6 +556,7 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create Relationship</DialogTitle>
+            <DialogDescription>Define how entities relate to each other</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -564,7 +573,7 @@ export const SchemaSidebar: React.FC<SchemaSidebarProps> = ({
               <Label htmlFor="relationType">Relationship Type</Label>
               <Select
                 value={newRelationship.type}
-                onValueChange={(value: Relationship['type']) => 
+                onValueChange={(value: RelationshipType) => 
                   setNewRelationship({...newRelationship, type: value})
                 }
               >
