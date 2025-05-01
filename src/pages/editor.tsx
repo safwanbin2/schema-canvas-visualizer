@@ -52,6 +52,19 @@ const EditorPage = () => {
               const defaultSchema = createDefaultSchema();
               console.log("Default schema created:", defaultSchema);
               setSchema(defaultSchema);
+              
+              // Update the project with the default schema
+              const updatedProject = {
+                ...currentProject,
+                schema: defaultSchema
+              };
+              setProject(updatedProject);
+              
+              // Save the updated project
+              const updatedProjects = projects.map(p => 
+                p.id === id ? updatedProject : p
+              );
+              localStorage.setItem(`erd-projects-${user.id}`, JSON.stringify(updatedProjects));
             }
           } else {
             toast.error("Project not found");
