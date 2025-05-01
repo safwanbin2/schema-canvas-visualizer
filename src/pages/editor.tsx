@@ -118,8 +118,8 @@ const EditorPage = () => {
         setSelectedEntityId={setSelectedEntityId}
       />
       
-      {/* Main editor area */}
-      <div className="flex flex-col flex-1 h-full">
+      {/* Main editor area - make sure this takes the full available width */}
+      <div className="flex flex-col flex-1 h-full w-full">
         {/* Editor toolbar */}
         <div className="p-4 border-b flex justify-between items-center bg-background">
           <div className="flex items-center gap-2">
@@ -142,8 +142,8 @@ const EditorPage = () => {
           </Button>
         </div>
         
-        {/* Canvas area - full width and height */}
-        <div className="flex-1 h-full w-full overflow-hidden">
+        {/* Canvas area - ensure full width and height */}
+        <div className="flex-1 w-full h-full overflow-hidden">
           <ERDCanvas 
             schema={schema} 
             selectedEntityId={selectedEntityId}

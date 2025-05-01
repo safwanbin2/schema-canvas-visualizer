@@ -17,45 +17,43 @@ import ProfilePage from "./pages/profile";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 
-// Create a new QueryClient instance
+// Create a new QueryClient instance using React.StrictMode to properly initialize React context
 const queryClient = new QueryClient();
 
 // Define App as a proper React functional component
 const App: React.FC = () => {
   return (
-    <React.StrictMode>
+    <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="erd-theme-preference">
-          <BrowserRouter>
-            <AuthProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Routes>
-                  {/* Index Route */}
-                  <Route path="/" element={<Index />} />
-                  
-                  {/* Auth Routes */}
-                  <Route element={<AuthLayout />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                  </Route>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Index Route */}
+                <Route path="/" element={<Index />} />
+                
+                {/* Auth Routes */}
+                <Route element={<AuthLayout />}>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                </Route>
 
-                  {/* App Routes */}
-                  <Route element={<AppLayout />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/editor/:id" element={<EditorPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                  </Route>
+                {/* App Routes */}
+                <Route element={<AppLayout />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/editor/:id" element={<EditorPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                </Route>
 
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </TooltipProvider>
-            </AuthProvider>
-          </BrowserRouter>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </TooltipProvider>
+          </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>
-    </React.StrictMode>
+    </BrowserRouter>
   );
 };
 

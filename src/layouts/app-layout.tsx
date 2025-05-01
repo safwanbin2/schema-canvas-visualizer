@@ -54,6 +54,7 @@ const AppLayout = () => {
         </div>
         
         <div className="flex items-center gap-4">
+          {/* Updated to be icon-only */}
           <ThemeToggle />
           
           <DropdownMenu>
@@ -90,7 +91,7 @@ const AppLayout = () => {
         </div>
       </header>
       
-      <main className="flex flex-1">
+      <main className="flex flex-1 w-full h-[calc(100vh-64px)]">
         <Outlet />
       </main>
     </div>

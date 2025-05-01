@@ -115,7 +115,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
   };
 
   // Handle mouse wheel for zooming with Ctrl key
-  const handleWheel = (e: React.WheelEvent) => {
+  const handleWheel = (e: WheelEvent) => {
     if (e.ctrlKey) {
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.05 : 0.05;
@@ -127,15 +127,15 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
   useEffect(() => {
     const canvasElement = canvasRef.current;
     if (canvasElement) {
-      canvasElement.addEventListener('wheel', handleWheel as unknown as EventListener, { passive: false });
+      canvasElement.addEventListener('wheel', handleWheel, { passive: false });
       return () => {
-        canvasElement.removeEventListener('wheel', handleWheel as unknown as EventListener);
+        canvasElement.removeEventListener('wheel', handleWheel);
       };
     }
   }, []);
 
   return (
-    <div className="relative flex-1 overflow-hidden w-full">
+    <div className="relative h-full w-full overflow-hidden">
       {/* Canvas controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <Button
@@ -172,7 +172,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
       {/* Canvas area */}
       <div
         ref={canvasRef}
-        className="w-full h-full canvas-grid bg-canvas overflow-hidden cursor-default"
+        className="w-full h-full canvas-grid overflow-hidden cursor-default"
         style={{ 
           cursor: dragMode ? (dragging ? "grabbing" : "grab") : "default"
         }}
@@ -188,6 +188,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
             transformOrigin: "0 0",
             width: "100%",
             height: "100%",
+            position: "relative",
           }}
         >
           {/* Draw relationship edges first so they appear behind entities */}
