@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/auth-context";
@@ -145,8 +144,8 @@ const EditorPage = () => {
         setSelectedEntityId={setSelectedEntityId}
       />
       
-      {/* Main editor area - ensure this takes the full available width */}
-      <div className="flex flex-col flex-1 h-full w-full overflow-visible">
+      {/* Main editor area - removed overflow-hidden */}
+      <div className="flex flex-col flex-1 h-full w-full">
         {/* Editor toolbar */}
         <div className="p-4 border-b flex justify-between items-center bg-background">
           <div className="flex items-center gap-2">
@@ -169,8 +168,8 @@ const EditorPage = () => {
           </Button>
         </div>
         
-        {/* Canvas area - ensure full width and height */}
-        <div className="flex-1 w-full h-full overflow-visible">
+        {/* Canvas area - Make sure it has proper height */}
+        <div className="flex-1 w-full h-full">
           <ERDCanvas 
             schema={schema} 
             selectedEntityId={selectedEntityId}

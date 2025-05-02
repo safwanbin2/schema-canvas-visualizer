@@ -1,4 +1,3 @@
-
 import { Navigate, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -91,7 +90,8 @@ const AppLayout = () => {
         </div>
       </header>
       
-      <main className="flex flex-1 w-full h-[calc(100vh-64px)]">
+      {/* Removed the fixed height and ensured proper flex behavior */}
+      <main className="flex flex-1 w-full h-full overflow-auto">
         <Outlet />
       </main>
     </div>

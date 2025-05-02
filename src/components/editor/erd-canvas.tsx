@@ -135,7 +135,7 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
   }, []);
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative w-full h-full">
       {/* Canvas controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <Button
@@ -169,10 +169,10 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
         {Math.round(zoom * 100)}%
       </div>
 
-      {/* Canvas area - make sure it has full width and height */}
+      {/* Canvas area - removed overflow-hidden */}
       <div
         ref={canvasRef}
-        className="w-full h-full cursor-default bg-background/20 overflow-hidden"
+        className="w-full h-full cursor-default bg-canvas-background"
         style={{ 
           cursor: dragMode ? (dragging ? "grabbing" : "grab") : "default"
         }}
