@@ -134,14 +134,8 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
     }
   }, []);
 
-  // Log render for debugging
-  useEffect(() => {
-    console.log("ERDCanvas rendered with schema:", schema);
-    console.log("Entities count:", schema.entities.length);
-  }, [schema]);
-
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full">
       {/* Canvas controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
         <Button
@@ -175,10 +169,10 @@ export const ERDCanvas: React.FC<ERDCanvasProps> = ({
         {Math.round(zoom * 100)}%
       </div>
 
-      {/* Canvas area */}
+      {/* Canvas area - make sure it has full width and height */}
       <div
         ref={canvasRef}
-        className="w-full h-full overflow-hidden cursor-default bg-background/20"
+        className="w-full h-full cursor-default bg-background/20"
         style={{ 
           cursor: dragMode ? (dragging ? "grabbing" : "grab") : "default"
         }}

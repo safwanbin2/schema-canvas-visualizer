@@ -2,6 +2,28 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ERDSchema, Entity, Attribute, Relationship, RelationshipType } from '@/types/erd';
 
+// Helper to create a new entity
+export const createNewEntity = (name: string, x: number = 300, y: number = 200): Entity => {
+  return {
+    id: uuidv4(),
+    name,
+    attributes: [
+      {
+        id: uuidv4(),
+        name: 'id',
+        dataType: 'uuid',
+        isPrimaryKey: true,
+        isForeignKey: false,
+        isRequired: true
+      }
+    ],
+    position: { x, y }
+  };
+};
+
+// Alias for createNewEntity to match what's being imported
+export const createEntity = createNewEntity;
+
 // Create a default schema with sample tables
 export const createDefaultSchema = (): ERDSchema => {
   // Create sample users entity
@@ -121,25 +143,15 @@ export const createDefaultSchema = (): ERDSchema => {
   };
 };
 
-// Alias for createNewEntity to match what's being imported
-export const createEntity = createNewEntity;
-
-// Helper to create a new entity
-export const createNewEntity = (name: string, x: number = 300, y: number = 200): Entity => {
+// Helper to create a new attribute
+export const createNewAttribute = (name: string): Attribute => {
   return {
     id: uuidv4(),
     name,
-    attributes: [
-      {
-        id: uuidv4(),
-        name: 'id',
-        dataType: 'uuid',
-        isPrimaryKey: true,
-        isForeignKey: false,
-        isRequired: true
-      }
-    ],
-    position: { x, y }
+    dataType: 'varchar',
+    isPrimaryKey: false,
+    isForeignKey: false,
+    isRequired: false
   };
 };
 
@@ -156,15 +168,22 @@ export const createAttribute = (name: string, dataType: string = 'varchar', opti
   };
 };
 
-// Helper to create a new attribute
-export const createNewAttribute = (name: string): Attribute => {
+// Helper to create a new relationship
+export const createNewRelationship = (
+  sourceEntityId: string,
+  targetEntityId: string,
+  sourceAttribute: string,
+  targetAttribute: string,
+  type: 'one-to-one' | 'one-to-many' | 'many-to-many' = 'one-to-many'
+): Relationship => {
   return {
     id: uuidv4(),
-    name,
-    dataType: 'varchar',
-    isPrimaryKey: false,
-    isForeignKey: false,
-    isRequired: false
+    name: `rel_${uuidv4().slice(0, 8)}`,
+    sourceEntityId,
+    targetEntityId,
+    sourceAttribute,
+    targetAttribute,
+    type
   };
 };
 
@@ -180,25 +199,6 @@ export const createRelationship = (
   return {
     id: uuidv4(),
     name,
-    sourceEntityId,
-    targetEntityId,
-    sourceAttribute,
-    targetAttribute,
-    type
-  };
-};
-
-// Helper to create a new relationship
-export const createNewRelationship = (
-  sourceEntityId: string,
-  targetEntityId: string,
-  sourceAttribute: string,
-  targetAttribute: string,
-  type: 'one-to-one' | 'one-to-many' | 'many-to-many' = 'one-to-many'
-): Relationship => {
-  return {
-    id: uuidv4(),
-    name: `rel_${uuidv4().slice(0, 8)}`,
     sourceEntityId,
     targetEntityId,
     sourceAttribute,
