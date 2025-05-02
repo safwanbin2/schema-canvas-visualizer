@@ -146,7 +146,7 @@ const EditorPage = () => {
       />
       
       {/* Main editor area - ensure this takes the full available width */}
-      <div className="flex flex-col flex-1 h-full w-full overflow-hidden">
+      <div className="flex flex-col flex-1 h-full w-full overflow-visible">
         {/* Editor toolbar */}
         <div className="p-4 border-b flex justify-between items-center bg-background">
           <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ const EditorPage = () => {
         </div>
         
         {/* Canvas area - ensure full width and height */}
-        <div className="flex-1 w-full h-full">
+        <div className="flex-1 w-full h-full overflow-visible">
           <ERDCanvas 
             schema={schema} 
             selectedEntityId={selectedEntityId}
@@ -181,3 +181,6 @@ const EditorPage = () => {
       </div>
     </div>
   );
+};
+
+export default EditorPage;

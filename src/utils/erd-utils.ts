@@ -2,8 +2,24 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ERDSchema, Entity, Attribute, Relationship, RelationshipType } from '@/types/erd';
 
+// Helper to create a new attribute
+export const createAttribute = (name: string, dataType: string = 'varchar', options?: Partial<Attribute>): Attribute => {
+  return {
+    id: uuidv4(),
+    name,
+    dataType,
+    isPrimaryKey: options?.isPrimaryKey || false,
+    isForeignKey: options?.isForeignKey || false,
+    isRequired: options?.isRequired || false,
+    foreignKeyReference: options?.foreignKeyReference
+  };
+};
+
+// Alias for backward compatibility
+export const createNewAttribute = createAttribute;
+
 // Helper to create a new entity
-export const createNewEntity = (name: string, x: number = 300, y: number = 200): Entity => {
+export const createEntity = (name: string, x: number = 300, y: number = 200): Entity => {
   return {
     id: uuidv4(),
     name,
@@ -21,173 +37,10 @@ export const createNewEntity = (name: string, x: number = 300, y: number = 200):
   };
 };
 
-// Alias for createNewEntity to match what's being imported
-export const createEntity = createNewEntity;
-
-// Create a default schema with sample tables
-export const createDefaultSchema = (): ERDSchema => {
-  // Create sample users entity
-  const usersEntity: Entity = {
-    id: uuidv4(),
-    name: 'users',
-    attributes: [
-      {
-        id: uuidv4(),
-        name: 'id',
-        dataType: 'uuid',
-        isPrimaryKey: true,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'username',
-        dataType: 'varchar',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'email',
-        dataType: 'varchar',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'created_at',
-        dataType: 'timestamp',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      }
-    ],
-    position: {
-      x: 200,
-      y: 150
-    }
-  };
-
-  // Create sample posts entity
-  const postsEntity: Entity = {
-    id: uuidv4(),
-    name: 'posts',
-    attributes: [
-      {
-        id: uuidv4(),
-        name: 'id',
-        dataType: 'uuid',
-        isPrimaryKey: true,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'title',
-        dataType: 'varchar',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'content',
-        dataType: 'text',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      },
-      {
-        id: uuidv4(),
-        name: 'user_id',
-        dataType: 'uuid',
-        isPrimaryKey: false,
-        isForeignKey: true,
-        isRequired: true,
-        foreignKeyReference: {
-          entityId: usersEntity.id,
-          attributeId: usersEntity.attributes[0].id
-        }
-      },
-      {
-        id: uuidv4(),
-        name: 'created_at',
-        dataType: 'timestamp',
-        isPrimaryKey: false,
-        isForeignKey: false,
-        isRequired: true
-      }
-    ],
-    position: {
-      x: 500,
-      y: 150
-    }
-  };
-
-  // Create relationship between users and posts
-  const relationship: Relationship = {
-    id: uuidv4(),
-    name: 'user_posts',
-    sourceEntityId: usersEntity.id,
-    targetEntityId: postsEntity.id,
-    sourceAttribute: usersEntity.attributes[0].id,
-    targetAttribute: postsEntity.attributes[3].id,
-    type: 'one-to-many'
-  };
-
-  return {
-    entities: [usersEntity, postsEntity],
-    relationships: [relationship]
-  };
-};
-
-// Helper to create a new attribute
-export const createNewAttribute = (name: string): Attribute => {
-  return {
-    id: uuidv4(),
-    name,
-    dataType: 'varchar',
-    isPrimaryKey: false,
-    isForeignKey: false,
-    isRequired: false
-  };
-};
-
-// Alias for createNewAttribute to match what's being imported
-export const createAttribute = (name: string, dataType: string = 'varchar', options?: Partial<Attribute>): Attribute => {
-  return {
-    id: uuidv4(),
-    name,
-    dataType,
-    isPrimaryKey: options?.isPrimaryKey || false,
-    isForeignKey: options?.isForeignKey || false,
-    isRequired: options?.isRequired || false,
-    foreignKeyReference: options?.foreignKeyReference
-  };
-};
+// Alias for backward compatibility
+export const createNewEntity = createEntity;
 
 // Helper to create a new relationship
-export const createNewRelationship = (
-  sourceEntityId: string,
-  targetEntityId: string,
-  sourceAttribute: string,
-  targetAttribute: string,
-  type: 'one-to-one' | 'one-to-many' | 'many-to-many' = 'one-to-many'
-): Relationship => {
-  return {
-    id: uuidv4(),
-    name: `rel_${uuidv4().slice(0, 8)}`,
-    sourceEntityId,
-    targetEntityId,
-    sourceAttribute,
-    targetAttribute,
-    type
-  };
-};
-
-// Alias for createNewRelationship to match what's being imported
 export const createRelationship = (
   name: string,
   sourceEntityId: string,
@@ -204,6 +57,72 @@ export const createRelationship = (
     sourceAttribute,
     targetAttribute,
     type
+  };
+};
+
+// Alias for backward compatibility
+export const createNewRelationship = (
+  sourceEntityId: string,
+  targetEntityId: string,
+  sourceAttribute: string,
+  targetAttribute: string,
+  type: RelationshipType = 'one-to-many'
+): Relationship => {
+  return createRelationship(
+    `rel_${uuidv4().slice(0, 8)}`,
+    sourceEntityId,
+    targetEntityId,
+    sourceAttribute,
+    targetAttribute,
+    type
+  );
+};
+
+// Create a default schema with sample tables
+export const createDefaultSchema = (): ERDSchema => {
+  // Create sample users entity
+  const usersEntity: Entity = createEntity('users', 200, 150);
+  
+  // Add attributes to users entity
+  usersEntity.attributes = [
+    createAttribute('id', 'uuid', { isPrimaryKey: true, isRequired: true }),
+    createAttribute('username', 'varchar', { isRequired: true }),
+    createAttribute('email', 'varchar', { isRequired: true }),
+    createAttribute('created_at', 'timestamp', { isRequired: true })
+  ];
+
+  // Create sample posts entity
+  const postsEntity: Entity = createEntity('posts', 500, 150);
+  
+  // Add attributes to posts entity
+  postsEntity.attributes = [
+    createAttribute('id', 'uuid', { isPrimaryKey: true, isRequired: true }),
+    createAttribute('title', 'varchar', { isRequired: true }),
+    createAttribute('content', 'text', { isRequired: true }),
+    createAttribute('user_id', 'uuid', { 
+      isRequired: true, 
+      isForeignKey: true,
+      foreignKeyReference: {
+        entityId: usersEntity.id,
+        attributeId: usersEntity.attributes[0].id
+      }
+    }),
+    createAttribute('created_at', 'timestamp', { isRequired: true })
+  ];
+
+  // Create relationship between users and posts
+  const relationship: Relationship = createRelationship(
+    'user_posts',
+    usersEntity.id,
+    postsEntity.id,
+    usersEntity.attributes[0].id,
+    postsEntity.attributes[3].id,
+    'one-to-many'
+  );
+
+  return {
+    entities: [usersEntity, postsEntity],
+    relationships: [relationship]
   };
 };
 
